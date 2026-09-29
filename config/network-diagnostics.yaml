@@ -1,0 +1,71 @@
+schemaVersion: 1
+version: "2026-09-29.4"
+product: ai-chat-roleplay
+limits:
+  concurrency: 3
+  dohTimeoutMs: 10000
+  resourceTimeoutMs: 15000
+  runTimeoutMs: 60000
+sources:
+  mobile:
+    repository: castbox/guru_ai_roleplay
+    commit: e817a5ceca183aded661b70c785085b2cd0779f5
+    path: lib/data/api/api_contract.dart
+    verifiedAt: "2026-09-28"
+  userProvided:
+    providedAt: "2026-09-29"
+    url: https://d2p265uuh9lhx2.cloudfront.net/character/assets/1801_image_m_mature_260819.jpg
+resolvers:
+  - id: cloudflare
+    url: https://cloudflare-dns.com/dns-query
+    method: GET
+    source: https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/
+    review: public-doh-json-get-no-credentials
+  - id: google
+    url: https://dns.google/resolve
+    method: GET
+    source: https://developers.google.com/speed/public-dns/docs/doh/json
+    review: public-doh-json-get-no-credentials
+targets:
+  - id: afizzy-site
+    label: Afizzy Web
+    environment: production
+    group: afizzy
+    url: https://afizzy.com/
+    method: GET
+    enabled: true
+    source: mobile
+    sourcePath: lib/ui/pages/debug/network_diagnostics.dart
+    review: hostname-only-public-doh-get
+    checks: [doh]
+  - id: afizzy-api
+    label: Afizzy API
+    environment: production
+    group: afizzy
+    url: https://ai-chat-roleplay.afizzy.com/
+    method: GET
+    enabled: true
+    source: mobile
+    review: hostname-only-public-doh-get
+    checks: [doh]
+  - id: thebetter-api
+    label: Thebetter API
+    environment: production
+    group: thebetter
+    url: https://ai-chat-roleplay.thebetter.ai/
+    method: GET
+    enabled: true
+    source: mobile
+    review: hostname-only-public-doh-get
+    checks: [doh]
+  - id: afizzy-resource-1801
+    label: Afizzy Character Image
+    environment: production
+    group: afizzy
+    url: https://d2p265uuh9lhx2.cloudfront.net/character/assets/1801_image_m_mature_260819.jpg
+    method: GET
+    enabled: true
+    source: userProvided
+    review: public-static-image-get
+    referenceBytes: 62515
+    checks: [image]

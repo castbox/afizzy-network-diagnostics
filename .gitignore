@@ -1,0 +1,8 @@
+node_modules/
+dist/
+src/catalog.generated.json
+.local-data/
+afizzy-network-report*.json
+test-results/
+playwright-report/
+.impeccable/review/
